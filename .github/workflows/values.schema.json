@@ -1,0 +1,212 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "wordpressUsername": {
+      "type": "string",
+      "title": "Username",
+      "form": true
+    },
+    "wordpressPassword": {
+      "type": "string",
+      "title": "Password",
+      "form": true,
+      "description": "Ayarlanmadıysa, varsayılan olarak rastgele 10 karakterli alfasayısal bir dizedir"
+    },
+    "wordpressEmail": {
+      "type": "string",
+      "title": "Admin email",
+      "form": true
+    },
+    "wordpressBlogName": {
+      "type": "string",
+      "title": "Blog Name",
+      "form": true
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "title": "Persistent Volume Size",
+          "form": true,
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi"
+        }
+      }
+    },
+    "mariadb": {
+      "type": "object",
+      "title": "MariaDB Details",
+      "form": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new MariaDB database hosted in the cluster",
+          "form": true,
+          "description": "Uygulamaların veritabanı gereksinimlerini karşılamak için bir mariadb sunucusunun dağıtılıp dağıtılmayacağı. Harici bir veritabanı kullanmak için bunu kapatın ve harici veritabanı ayrıntılarını yapılandırın"
+        },
+        "primary": {
+          "type": "object",
+          "properties": {
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "title": "Volume Size",
+                  "form": true,
+                  "hidden": {
+                    "value": false,
+                    "path": "mariadb/enabled"
+                  },
+                  "render": "slider",
+                  "sliderMin": 1,
+                  "sliderMax": 100,
+                  "sliderUnit": "Gi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "externalDatabase": {
+      "type": "object",
+      "title": "External Database Details",
+      "description": "MariaDB devre dışıysa. Harici veritabanı ayrıntılarını belirtmek için bu bölümü kullanın",
+      "form": true,
+      "properties": {
+        "host": {
+          "type": "string",
+          "form": true,
+          "title": "Database Host",
+          "hidden": "mariadb/enabled"
+        },
+        "user": {
+          "type": "string",
+          "form": true,
+          "title": "Database Username",
+          "hidden": "mariadb/enabled"
+        },
+        "password": {
+          "type": "string",
+          "form": true,
+          "title": "Database Password",
+          "hidden": "mariadb/enabled"
+        },
+        "database": {
+          "type": "string",
+          "form": true,
+          "title": "Database Name",
+          "hidden": "mariadb/enabled"
+        },
+        "port": {
+          "type": "integer",
+          "form": true,
+          "title": "Database Port",
+          "hidden": "mariadb/enabled"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "form": true,
+      "title": "Ingress Configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Use a custom hostname",
+          "description": "WordPress kurulumuna erişmenizi sağlayan giriş kaynağını etkinleştirin."
+        },
+        "hostname": {
+          "type": "string",
+          "form": true,
+          "title": "Hostname",
+          "hidden": {
+            "value": false,
+            "path": "ingress/enabled"
+          }
+        },
+        "tls": {
+          "type": "boolean",
+          "form": true,
+          "title": "Create a TLS secret",
+          "hidden": {
+            "value": false,
+            "path": "ingress/enabled"
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "form": true,
+      "title": "Service Configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "form": true,
+          "title": "Service Type",
+          "description": "Allowed values: \"ClusterIP\", \"NodePort\" and \"LoadBalancer\"" 
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Required Resources",
+      "description": "Configure resource requests",
+      "form": true,
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "Memory Request",
+              "sliderMin": 10,
+              "sliderMax": 4096,
+              "sliderUnit": "Mi"
+            },
+            "cpu": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "CPU Request",
+              "sliderMin": 100,
+              "sliderMax": 1000,
+              "sliderUnit": "m"
+            }
+          }
+        }
+      }
+    },
+    "volumePermissions": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable Init Containers",
+          "description": "Son hedefe bağlamadan önce veri biriminde gerekli klasör izinlerini ayarlamak için bir başlatma kapsayıcısı kullanın"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Metrics",
+          "description": "Prometheus Exporter / Metrics",
+          "form": true
+        }
+      }
+    }
+  }
+}
